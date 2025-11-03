@@ -98,7 +98,18 @@ int buildEncodingTree(int nextFree) {
     //    - Set left/right pointers
     //    - Push new parent index back into the heap
     // 4. Return the index of the last remaining node (root)
-    return -1; // placeholder
+
+    MinHeap heap;
+    // This pushes every leaf node indices into the heap
+    for (int i = 0; i < nextFree; i++) {
+        heap.push(i, weightArr);
+    }
+
+    // This while loop will repeat until there is only the root left.
+    while (heap.size > 1) {
+
+    }
+    return heap.pop(weightArr);
 }
 
 // Step 4: Use an STL stack to generate codes
