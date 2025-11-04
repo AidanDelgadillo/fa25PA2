@@ -108,26 +108,22 @@ int buildEncodingTree(int nextFree) {
     int currentIdx = nextFree;
     // This while loop will repeat until there is only the root left.
     while (heap.size > 1) {
+        //This creates a new parent node at the next free index.
+        int parent = nextFree;
         // This pops the two smallest weight nodes from the heap
         int left = heap.pop(weightArr);
         int right = heap.pop(weightArr);
 
-        //This creates a new parent node at the next free index.
-        int parent = nextFree;
-        nextFree++;
-
-        leftArr[parent] = left;
-        rightArr[parent] = right;
-        charArr[parent] = '\0';
         // This sets the parent nodes weight as the combination of the left and right childs weights.
         weightArr[parent] = weightArr[left] + weightArr[right];
-
+        leftArr[parent] = left;
+        rightArr[parent] = right;
+        nextFree++;
         // This pushes the new parent node back into the heap.
         heap.push(parent, weightArr);
     }
     // Returns index of the root node.
-    int root = heap.pop(weightArr);
-    return root;
+return heap.data[0];
 
 }
 
@@ -139,6 +135,7 @@ void generateCodes(int root, string codes[]) {
     // Record code when a leaf node is reached.
 
     stack<pair<int, string>> stack;
+
     // This starts at the root node with empty code.
     stack.push({root, ""});
 
@@ -160,9 +157,7 @@ void generateCodes(int root, string codes[]) {
             // We then get the binary code of that index.
             char ch = charArr[node];
             // This only allows valid letters.
-            if (ch >= 'a' && ch <= 'z') {
                 codes[ch - 'a'] = code;
-            }
         }
         else {
             // This executes if it is not a leaf node.
