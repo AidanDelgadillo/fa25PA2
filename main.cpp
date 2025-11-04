@@ -105,23 +105,30 @@ int buildEncodingTree(int nextFree) {
         heap.push(i, weightArr);
     }
 
+    int currentIdx = nextFree;
     // This while loop will repeat until there is only the root left.
     while (heap.size > 1) {
         // This pops the two smallest weight nodes from the heap
         int left = heap.pop(weightArr);
         int right = heap.pop(weightArr);
 
-        // This creates a new parent node at the next free index.
-        int parent = nextFree + 1;
+        //This creates a new parent node at the next free index.
+        int parent = nextFree;
+        nextFree++;
+
         leftArr[parent] = left;
         rightArr[parent] = right;
+        charArr[parent] = '\0';
         // This sets the parent nodes weight as the combination of the left and right childs weights.
         weightArr[parent] = weightArr[left] + weightArr[right];
 
         // This pushes the new parent node back into the heap.
         heap.push(parent, weightArr);
     }
-    return heap.pop(weightArr);
+    // Returns index of the root node.
+    int root = heap.pop(weightArr);
+    return root;
+
 }
 
 // Step 4: Use an STL stack to generate codes
@@ -135,7 +142,7 @@ void generateCodes(int root, string codes[]) {
     // This starts at the root node with empty code.
     stack.push({root, ""});
 
-    // This will iterate until all nodes are done.
+    // This will iterate until all nodes are have been processed.
     while (!stack.empty()) {
         // This gets the top pair from the stack and removes it.
         pair<int, string> topPair = stack.top();
@@ -148,7 +155,27 @@ void generateCodes(int root, string codes[]) {
 
         // This checks if node has no children, therefore it would be a leaf node.
         if (leftArr[node] == -1 && rightArr[node] == -1) {
+            // This finds the character at the node.
+            // With the character we then find the index of the character within the alphabet.
+            // We then get the binary code of that index.
+            char ch = charArr[node];
+            // This only allows valid letters.
+            if (ch >= 'a' && ch <= 'z') {
+                codes[ch - 'a'] = code;
+            }
+        }
+        else {
+            // This executes if it is not a leaf node.
+            // This will push the right child first because it will be further into the stack than the left node.
+            // If the right node exists.
+            // These both push the children into the stack.
+            if (rightArr[node] != -1) {
+                stack.push({rightArr[node], code + "1"});
+            }
 
+            if (leftArr[node] != -1) {
+                stack.push({leftArr[node], code + "0"});
+            }
         }
     }
 }
